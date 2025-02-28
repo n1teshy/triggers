@@ -64,14 +64,18 @@ async function trigger(req) {
   await onRequest(req);
   const triggerId = req.path.replace(/\/$/, "").split("/").at(-1);
   if (method === "GET") {
-    const trigger = await Trigger.findById(triggerId);
-    if (trigger) {
-      return trigger.toJSON();
+    try {
+      const trigger = await Trigger.findById(triggerId);
+      if (trigger) {
+        return trigger.toJSON();
+      }
+      return makeResponse(
+        { message: "Nah, I ain't know where that is." },
+        statuses.NOT_FOUND
+      );
+    } catch (e) {
+      return makeResponse({ message: e.message }, 500);
     }
-    return makeResponse(
-      { message: "Nah, I ain't know where that is." },
-      statuses.NOT_FOUND
-    );
   } else if (method == "POST") {
     const updated = await Note.findByIdAndUpdate(
       triggerId,
@@ -84,7 +88,7 @@ async function trigger(req) {
   }
   const password = !req.body?.password;
   const trigger = Trigger.findById(triggerId);
-  
+
   if (!trigger) {
     return makeResponse(
       { message: "Nah, I ain't know where that is." },
