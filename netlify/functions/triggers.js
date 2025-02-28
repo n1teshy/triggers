@@ -39,7 +39,7 @@ async function triggers(req) {
   }
   await onRequest(req);
   if (method == "POST") {
-    const trigger = new Trigger({ password: randomId() });
+    const trigger = Trigger.create({ password: randomId() });
     return makeResponse(trigger.toJSON(true), 200, {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "*",
