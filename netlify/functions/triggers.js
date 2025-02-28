@@ -67,7 +67,7 @@ async function trigger(req) {
     try {
       const trigger = await Trigger.findById(triggerId);
       if (trigger) {
-        return trigger.toJSON();
+        return makeResponse(trigger.toJSON());
       }
       return makeResponse(
         { message: "Nah, I ain't know where that is." },
