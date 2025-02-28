@@ -103,5 +103,5 @@ async function trigger(req) {
 
 const handlers = [
   ["/.netlify/functions/triggers/?$", triggers],
-  ["/.netlify/functions/notes/[A-Fa-f0-9]{24}/?$", trigger],
+  ["/.netlify/functions/triggers/[A-Fa-f0-9]{24}/?$", trigger],
 ];
