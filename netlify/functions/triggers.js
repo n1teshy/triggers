@@ -58,8 +58,13 @@ async function triggers(req) {
 
 async function trigger(req) {
   const method = req.httpMethod;
-  if (method !== "GET" && method !== "POST" && method !== "DELETE") {
-    throw AppError(statuses.UNPROCESSABLE, "wrong method fam.");
+  if (
+    method !== "GET" &&
+    method !== "POST" &&
+    method !== "PUT" &&
+    method !== "DELETE"
+  ) {
+    throw new AppError(statuses.UNPROCESSABLE, "wrong method fam.");
   }
   await onRequest(req);
   const triggerId = req.path.replace(/\/$/, "").split("/").at(-1);
