@@ -63,21 +63,17 @@ async function trigger(req) {
   }
   await onRequest(req);
   const triggerId = req.path.replace(/\/$/, "").split("/").at(-1);
+  const trigger = await Trigger.findById(triggerId);
+  if (!trigger) {
+    return makeResponse(
+      { message: "Nah, I ain't know that trigger." },
+      statuses.NOT_FOUND
+    );
+  }
   if (method === "GET") {
-    try {
-      const trigger = await Trigger.findById(triggerId);
-      if (trigger) {
-        return makeResponse(trigger.toJSON());
-      }
-      return makeResponse(
-        { message: "Nah, I ain't know where that is." },
-        statuses.NOT_FOUND
-      );
-    } catch (e) {
-      return makeResponse({ message: e.message }, 500);
-    }
+    return makeResponse(trigger.toJSON());
   } else if (method == "POST") {
-    const updated = await Note.findByIdAndUpdate(
+    const updated = await Trigger.findByIdAndUpdate(
       triggerId,
       { active: true },
       {
@@ -85,16 +81,17 @@ async function trigger(req) {
       }
     );
     return makeResponse({ active: updated.active });
+  } else if (method === "PUT") {
+    const updated = await Trigger.findByIdAndUpdate(
+      triggerId,
+      { active: false },
+      {
+        new: true,
+      }
+    );
+    return makeResponse({ active: updated.active });
   }
   const password = !req.body?.password;
-  const trigger = Trigger.findById(triggerId);
-
-  if (!trigger) {
-    return makeResponse(
-      { message: "Nah, I ain't know where that is." },
-      statuses.NOT_FOUND
-    );
-  }
   if (!password || password !== trigger.password) {
     return makeResponse(
       { message: "You ain't authorized for these streets lil bro." },
