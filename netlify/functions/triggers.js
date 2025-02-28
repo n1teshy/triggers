@@ -97,6 +97,7 @@ async function trigger(req) {
     return makeResponse({ active: updated.active });
   }
   const password = !req.body?.password;
+  return makeResponse({password, real: trigger.password})
   if (!password || password !== trigger.password) {
     return makeResponse(
       { message: "You ain't authorized for these streets lil bro." },
