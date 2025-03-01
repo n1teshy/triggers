@@ -1,1 +1,1 @@
-{"id":"67c2e518f18017c47d89c4bc","name":"trigger-1","active":false,"password":"2aba56c8fca4911f5f11948a"}
+{"id":"67c2ebe1de540495798cb19a","name":"trigger-1","active":false,"password":"642d4ac02e2ccc9e6eca68f9"}
