@@ -2,6 +2,7 @@ import { onRequest } from "../utils/request.js";
 import { Trigger } from "../models/trigger.js";
 import { makeResponse, statuses } from "../utils/response.js";
 import { AppError } from "../utils/error.js";
+import mongoose from "mongoose";
 
 function randomId() {
   const chars = "0123456789abcdef";
@@ -80,9 +81,10 @@ async function trigger(req) {
   }
   await onRequest(req);
   const triggerId = req.path.replace(/\/$/, "").split("/").at(-1);
-  const trigger = await Trigger.findOne({
-    $or: [{ name: triggerId }, { _id: triggerId }],
-  });
+  let trigger = await Trigger.findOne({name: triggerId})
+  if (!trigger && mongoose.Types.ObjectId.isValid(triggerId)) {
+    trigger = await Trigger.findById(triggerId);
+  }
   if (!trigger) {
     return makeResponse(
       { message: "Nah, I ain't know that trigger." },
