@@ -42,6 +42,13 @@ async function triggers(req) {
     const name = req.body?.name;
     const triggerData = { password: randomId() };
     if (name) {
+      const exists = await Trigger.exists({ name: name });
+      if (exists) {
+        return makeResponse(
+          { message: "Somebody else got that name before you bro, you late." },
+          statuses.UNPROCESSABLE
+        );
+      }
       triggerData.name = name;
     }
     const trigger = await Trigger.create(triggerData);
