@@ -94,23 +94,13 @@ async function trigger(req) {
   if (method === "GET") {
     return makeResponse(trigger.toJSON());
   } else if (method == "POST") {
-    const updated = await Trigger.findByIdAndUpdate(
-      triggerId,
-      { active: true },
-      {
-        new: true,
-      }
-    );
-    return makeResponse({ active: updated.active });
+    trigger.active = true;
+    await trigger.save();
+    return makeResponse({ active: trigger.active });
   } else if (method === "PUT") {
-    const updated = await Trigger.findByIdAndUpdate(
-      triggerId,
-      { active: false },
-      {
-        new: true,
-      }
-    );
-    return makeResponse({ active: updated.active });
+    trigger.active = false;
+    await trigger.save();
+    return makeResponse({ active: trigger.active });
   }
   const password = req.body?.password;
   if (!password || password !== trigger.password) {
@@ -119,7 +109,7 @@ async function trigger(req) {
       statuses.UNAUTHORIZED
     );
   }
-  await Trigger.findByIdAndDelete(triggerId);
+  await Trigger.findByIdAndDelete(trigger._id.toString());
   return makeResponse({ message: "deleted" });
 }
 
