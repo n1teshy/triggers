@@ -39,7 +39,12 @@ async function triggers(req) {
   }
   await onRequest(req);
   if (method == "POST") {
-    const trigger = await Trigger.create({ password: randomId() });
+    const name = req.body?.name;
+    const triggerData = { password: randomId() };
+    if (name) {
+      triggerData.name = name;
+    }
+    const trigger = await Trigger.create(triggerData);
     return makeResponse(trigger.toJSON(true), 200, {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "*",
@@ -68,7 +73,9 @@ async function trigger(req) {
   }
   await onRequest(req);
   const triggerId = req.path.replace(/\/$/, "").split("/").at(-1);
-  const trigger = await Trigger.findById(triggerId);
+  const trigger = await Trigger.findOne({
+    $or: [{ name: triggerId }, { _id: triggerId }],
+  });
   if (!trigger) {
     return makeResponse(
       { message: "Nah, I ain't know that trigger." },
@@ -109,5 +116,5 @@ async function trigger(req) {
 
 const handlers = [
   ["/.netlify/functions/triggers/?$", triggers],
-  ["/.netlify/functions/triggers/[A-Fa-f0-9]{24}/?$", trigger],
+  ["/.netlify/functions/triggers/[^/]+/?$", trigger],
 ];

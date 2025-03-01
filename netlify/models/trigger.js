@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const noteSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    unique: true
+  },
   active: {
     type: Boolean,
     default: false
@@ -13,6 +17,7 @@ const noteSchema = new mongoose.Schema({
 noteSchema.methods.toJSON = function (password = false) {
   const trigger = {
     id: this._id.toString(),
+    name: this.name,
     active: this.active,
   };
   if(password) {
